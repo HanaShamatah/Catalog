@@ -43,8 +43,8 @@ class Categories(Base):  # Class code
     __tablename__ = 'categories'
 
     id = Column(Integer, primary_key=True)  # Mapper code
-    name = Column(String(250), nullable=False, unique=True)
-    user_id = Column(Integer, ForeignKey('user.id'), unique=True)
+    name = Column(String(250), unique=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User")
 
     @property
@@ -67,9 +67,9 @@ class CatalogItem(Base):  # Class code
     date = Column(DateTime, nullable=False)
     description = Column(String(250))
     picture = Column(String(250))
-    category_name = Column(String(250), ForeignKey('categories.name'), unique=True)
+    category_name = Column(String(250), ForeignKey('categories.name'))
     categories = relationship("Categories", cascade="all, delete")
-    user_id = Column(Integer, ForeignKey('user.id'), unique=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User")
 
     @property
