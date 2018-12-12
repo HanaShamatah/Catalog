@@ -29,16 +29,15 @@ app = Flask(__name__)
 
 # Google OAuth 2.0 CLIENT_ID and CLIENT_secret
 CLIENT_ID = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_id']
+    open('/var/www/catalog/catalog/client_secrets.json', 'r').read())['web']['client_id']
 CLIENT_secret = json.loads(
-    open('client_secrets.json', 'r').read())['web']['client_secret']
-print CLIENT_ID
-print CLIENT_secret
+    open('/var/www/catalog/catalog/client_secrets.json', 'r').read())['web']['client_secret']
+#print CLIENT_ID
+#print CLIENT_secret
 APPLICATION_NAME = "Item Catalog"
 
 # Connect to Database and create database session
-engine = create_engine(
-    'sqlite:///clothescategories.db', poolclass=SingletonThreadPool)
+engine = create_engine('postgresql://catalog:catalog@localhost/catalog')
 Base.metadata.bind = engine
 # Create session
 DBSession = sessionmaker(bind=engine)
@@ -51,7 +50,7 @@ def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in xrange(32))
     login_session['state'] = state
-    print state
+    #print state
     # return "The current session state is %s" % login_session['state']
     if 'username' not in login_session:
         return render_template('login.html', STATE=state)
@@ -87,7 +86,7 @@ def gconnect():
 
     # Check that the access token is valid.
     access_token = credentials.access_token
-    print access_token
+    #print access_token
     # Connect to Google login API
     url = ('https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s'
            % access_token)
@@ -112,7 +111,7 @@ def gconnect():
     if result['issued_to'] != CLIENT_ID:
         response = make_response(
             json.dumps("Token's client ID does not match app's."), 401)
-        print "Token's client ID does not match app's."
+        #print "Token's client ID does not match app's."
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -156,7 +155,7 @@ def gconnect():
     output += login_session['picture']
     output += '" style = "width: 300px; height: 300px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;">'  # noqa
     flash("you are now logged in as %s" % login_session['username'])
-    print "done!"
+    #print "done!"
     return output
 
 
@@ -215,14 +214,14 @@ def gdisconnect():
     # check connected user
     access_token = login_session.get('access_token')
     if access_token is None:
-        print 'Access Token is None'
+        #print ('Access Token is None')
         response = make_response(json.dumps(
             'Current user not connected.'), 401)
         response.headers['Content-Type'] = 'application/json'
         return response
-    print 'In gdisconnect access token is %s', access_token
-    print 'User name is: '
-    print login_session['username']
+    #print 'In gdisconnect access token is %s', access_token
+    #print 'User name is: '
+    #print login_session['username']
     # connect to Google disconnect API
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % access_token
     h = httplib2.Http()
@@ -249,13 +248,12 @@ def fbconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     access_token = request.data
-    print "access token received %s " % access_token
+    #print "access token received %s " % access_token
 
     # Facebook App ID and Secret
     app_id = json.loads(open('fb_client_secrets.json', 'r').read())[
         'web']['app_id']
-    app_secret = json.loads(
-        open('fb_client_secrets.json', 'r').read())['web']['app_secret']
+    app_secret = json.loads(open('fb_client_secrets.json', 'r').read())['web']['app_secret']
 
     url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (app_id, app_secret, access_token)  # noqa
     h = httplib2.Http()
@@ -264,7 +262,7 @@ def fbconnect():
     # Use token to get user info from API
     userinfo_url = "https://graph.facebook.com/v3.2/me"
     token = result.split(',')[0].split(':')[1].replace('"', '')
-    print token
+    #print token
 
     # Connect to Facebook login API
     url = 'https://graph.facebook.com/v3.2/me?access_token=%s&fields=name,id,email' % token  # noqa
@@ -315,14 +313,14 @@ def fbconnect():
 @app.route('/fbdisconnect')
 def fbdisconnect():
     facebook_id = login_session['facebook_id']
-    print facebook_id
+    #print facebook_id
     # The access token must me included to successfully logout
     access_token = login_session['access_token']
-    print "access token received %s " % access_token
+    #print "access token received %s " % access_token
     # connect to Facebook disconnect API
     url = 'https://graph.facebook.com/%s/permissions?access_token=%s' % (
         facebook_id, access_token)
-    print url
+    #print url
     h = httplib2.Http()
     result = h.request(url, 'DELETE')[1]
     return redirect(url_for('showCategories'))
@@ -508,9 +506,9 @@ def newCategoryItem(category_name):
             'You must fill all fields in order to add a new item')){} else\
             window.location='http://localhost:8000/catalog/%s/new';}\
             </script><body onload='myFunction()''>" % category_name
-        print newCatalogItem.description
-        print newCatalogItem.category_name
-        print newCatalogItem.name
+        #print newCatalogItem.description
+        #print newCatalogItem.category_name
+        #print newCatalogItem.name
         return redirect(url_for('CategoryItems',
                                 category_name=newCatalogItem.category_name))
     else:
@@ -584,4 +582,4 @@ def deleteCategoryItem(category_name, item_name):
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
     app.debug = True
-    app.run()
+    app.run(host='52.59.248.6', port=80)
