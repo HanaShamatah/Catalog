@@ -75,7 +75,7 @@ def gconnect():
 
     try:
         # Upgrade the authorization code into a credentials object
-        oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+        oauth_flow = flow_from_clientsecrets('/var/www/catalog/catalog/client_secrets.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -539,7 +539,7 @@ def editCategoryItem(category_name, item_name):
         if request.form['category']:
             editedCatalogItem.category_name = request.form['category']
         if request.form['picture']:
-            editedCatalogItem.category_name = request.form['picture']
+            editedCatalogItem.picture = request.form['picture']
         editedCatalogItem.date = datetime.datetime.now()
         session.add(editedCatalogItem)
         flash('Catalog Item %s Successfully edited' % editedCatalogItem.name)

@@ -7,7 +7,7 @@ from sqlalchemy import (Column,
                         String,
                         DateTime)
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy import create_engine
 
 # In order to create a base class that our class code will inherit
@@ -68,7 +68,7 @@ class CatalogItem(Base):  # Class code
     description = Column(String(250))
     picture = Column(String(250))
     category_name = Column(String(250), ForeignKey('categories.name'))
-    categories = relationship("Categories", cascade="all, delete")
+    categories = relationship("Categories", backref=backref("catalog_item", cascade="all, delete, save-update"))
     user_id = Column(Integer, ForeignKey('user.id'))
     user = relationship("User")
 
