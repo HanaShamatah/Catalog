@@ -11,3 +11,4 @@ instead of ('sqlite:///clothescategories.db') in init.py, database setup file ca
 and fill data file filldatabase_clothes.py.
 - Update client_secrets.py from downloaded json file after adding http://52.59.248.6.xip.io to Authorized Javascript origins 
 and update Authorized redirect URIs with http://52.59.248.6.xip.io/gconnect, and http://52.59.248.6.xip.io/login.
+- Update Client id to the new one configured in Google console to this project in login.html file.
