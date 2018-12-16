@@ -157,7 +157,7 @@ catalogItem11 = CatalogItem(user_id=User1.id,
                             category_name=category2.name,
                             name="Jeans",
                             description="A casual pants for daily use",  # noqa
-                            picture="https://www.google.com/url?sa=i&rct=j&q=&esrc=s&source=images&cd=&cad=rja&uact=8&ved=2ahUKEwjcqe_4sMPeAhVCKBoKHT1UCRoQjRx6BAgBEAU&url=https%3A%2F%2Fwww.ebay.com.au%2Fitm%2FBoys-Ripped-Denim-Jeans-Kids-Pants-Trousers-Bottoms-Children-Fashion-FREE-BELT-%2F401415995742&psig=AOvVaw2z7SCtjUvZGQFykEWtoNO3&ust=1541717910057094",  # noqa
+                            picture="https://i.pinimg.com/236x/ad/a1/ae/ada1aec034004ad3c5f6392b71f73240.jpg",
                             date=datetime.datetime.now())
 session.add(catalogItem11)
 session.commit()
